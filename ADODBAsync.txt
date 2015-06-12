@@ -1,0 +1,18 @@
+	Set cmdSP = New ADODB.Command
+	With cmdSP
+		.ActiveConnection = cnnMain
+                .CommandType = adCmdStoredProc
+                .CommandText = strSPName
+                .CommandTimeout = nCommandTimeout
+
+                .Parameters.Append .CreateParameter("GroupId", adInteger, adParamInput, , nGroupId)
+                .Parameters.Append .CreateParameter("UserId", adSmallInt, adParamInput, , pubUserId)
+
+                .Execute , , adAsyncExecute
+                Do While .State = adStateExecuting
+                    DoEvents
+                    Call ShowLoading(True, "Please wait, preparing data for report: " & strReportName)
+                Loop
+                Call ShowLoading(False)
+	End With
+	Set cmdSP = Nothing
